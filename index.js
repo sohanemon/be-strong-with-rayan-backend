@@ -14,6 +14,7 @@ try {
   });
   app.post("/services", async (req, res) => {
     const result = await serviceCollection.insertOne(req.body);
+    // console.log(req.body);
     res.send(result);
   });
 } catch (error) {

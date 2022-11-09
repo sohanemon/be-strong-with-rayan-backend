@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient, ObjectId, Timestamp } = require("mongodb");
 app.use(cors());
 app.use(express.json());
 const port = 5000;
@@ -29,8 +29,16 @@ try {
     });
     res.send(result);
   });
+  app.get("/review", async (req, res) => {
+    const cursor = reviewCollection.find({ email: req.query.email });
+    const result = await cursor.toArray();
+    res.send(result);
+  });
   app.post("/review", async (req, res) => {
-    const result = await reviewCollection.insertOne(req.body);
+    const result = await reviewCollection.insertOne({
+      timestamp: new Timestamp(),
+      ...req.body,
+    });
 
     res.send(result);
   });
@@ -45,5 +53,4 @@ try {
 } catch (error) {
   console.log("🚀 > error", error);
 }
-
 app.listen(port, () => console.log(`App listening on port ${port}!`));

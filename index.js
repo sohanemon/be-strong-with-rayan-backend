@@ -31,7 +31,11 @@ try {
   });
   app.get("/review", async (req, res) => {
     const cursor = reviewCollection.find({ email: req.query.email });
-    const result = await cursor.toArray();
+
+    const result = await cursor
+      .sort({ timestamp: parseInt(req.query.order) || 1 })
+      .toArray();
+
     res.send(result);
   });
   app.post("/review", async (req, res) => {

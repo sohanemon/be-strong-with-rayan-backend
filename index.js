@@ -11,6 +11,7 @@ const client = new MongoClient(process.env.URI);
 const serviceCollection = client.db("be-strong").collection("services");
 const reviewCollection = client.db("be-strong").collection("reviews");
 const faqCollection = client.db("be-strong").collection("faqs");
+const blogCollection = client.db("be-strong").collection("blogs");
 
 // jwt verification
 const verifyJWT = (req, res, next) => {
@@ -33,11 +34,17 @@ try {
   });
   app.get("/services", async (req, res) => {
     const cursor = serviceCollection.find({});
-    const data = await cursor.limit(parseInt(req.query.limit) || 0).toArray();
+    const data = await cursor
+      .limit(parseInt(req.query.limit) || 0)
+      .sort({ timestamp: -1 })
+      .toArray();
     res.send(data);
   });
   app.post("/services", async (req, res) => {
-    const result = await serviceCollection.insertOne(req.body);
+    const result = await serviceCollection.insertOne({
+      timestamp: new Timestamp(),
+      ...req.body,
+    });
 
     res.send(result);
   });
@@ -85,6 +92,11 @@ try {
     const cursor = faqCollection.find({});
     const data = await cursor.toArray();
     res.send(data);
+  });
+  app.get("/blogs", async (req, res) => {
+    const cr = blogCollection.find({});
+    const result = await cr.toArray();
+    res.send(result);
   });
 } catch (error) {
   console.error("🚀 > error", error);

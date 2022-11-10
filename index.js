@@ -88,6 +88,12 @@ try {
 
     res.send(result);
   });
+  app.delete("/review/:id", async (req, res) => {
+    const result = await reviewCollection.deleteOne({
+      _id: ObjectId(req.params.id),
+    });
+    res.send(result);
+  });
   app.get("/faqs", async (req, res) => {
     const cursor = faqCollection.find({});
     const data = await cursor.toArray();

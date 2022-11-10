@@ -30,7 +30,7 @@ try {
     res.send(token);
   });
   app.get("/", (req, res) => {
-    res.send("Be Strong with Rayan is running...");
+    res.send("Be Strong with Rayan is running... updated");
   });
   app.get("/services", async (req, res) => {
     const cursor = serviceCollection.find({});
